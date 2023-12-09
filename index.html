@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ESD Modbus Communication</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<!--Navigation Bar -->
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid" style="background-color: rgb(255, 255, 255);">
+        <a class="navbar-brand" href="https://www.esd-india.com/">
+            <img src="logo.jpg" alt="Electronics Systems And Devices" width="40" height="40">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-target="#liveData"  onclick="readAndDisplayLiveData()">Live</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-target="#historyLink" data-bs-toggle="modal">History</a>
+                </li>
+                <li>
+                    <a class="nav-link" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" onclick="load_COM_Data()">Settings</a>
+                </li>
+                <li>
+                    <a class="nav-link"  data-bs-target="#setpoint" data-bs-toggle="modal" onclick="loadData()">Setpoint</a>
+                </li>
+                <!-- History -->
+                <div class="modal fade" id="historyLink" aria-hidden="true"
+                    aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalToggleLabel">History</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="box1">
+                                <div>
+                                  <label for="selectDate">Select Date:</label>
+                                  <input type="date" id="selectDate">
+                                  <button onclick="readAndDisplayhistoryData()">Read and Display Data</button>
+                                </div>
+                                <div id="tableContainer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
+                    aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalToggleLabel">SERIAL PORT CONFIGURATION
+                                </h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <!-- Port Settings-->
+                            <div class="box1">
+                                <label for="comPortSelect">COM Port:</label>
+                                <select id="comPortSelect"></select>
+                                <br><br>
+                                <button type="button" class="btn btn-success" id="connectButton" onclick="Save_COM_Data()">Connect</button>
+                                <button type="button" class="btn btn-danger" id="disconnectButton">Disconnect</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <!-- Setpoint -->
+                <div class="modal fade" id="setpoint" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Channel Setpoints
+                                </h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                            </div>
+                            <!-- Set Point Settings-->
+                            <div class="ch_sp">
+                                <table class="ch_sp">
+                                    <tr>
+                                      <th>Channel</th>
+                                      <th>LSL</th>
+                                      <th>USL</th>
+                                    </tr>
+                                    <tr>
+                                      <td>Channel 1</td>
+                                      <td><input type="number" id="lsl1" ></td>
+                                      <td><input type="number" id="usl1" ></td>
+                                    </tr>
+                                    <tr>
+                                      <td>Channel 2</td>
+                                      <td><input type="number" id="lsl2" ></td>
+                                      <td><input type="number" id="usl2" ></td>
+                                    </tr>
+                                    <tr>
+                                      <td>Channel 3</td>
+                                      <td><input type="number" id="lsl3" ></td>
+                                      <td><input type="number" id="usl3" ></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Channel 4</td>
+                                        <td><input type="number" id="lsl4" ></td>
+                                        <td><input type="number" id="usl4" ></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Channel 5</td>
+                                        <td><input type="number" id="lsl5" ></td>
+                                        <td><input type="number" id="usl5" ></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Channel 6</td>
+                                        <td><input type="number" id="lsl6" ></td>
+                                        <td><input type="number" id="usl6" ></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Channel 7</td>
+                                        <td><input type="number" id="lsl7" ></td>
+                                        <td><input type="number" id="usl7" ></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Channel 8</td>
+                                        <td><input type="number" id="lsl8" ></td>
+                                        <td><input type="number" id="usl8" ></td>
+                                    </tr>
+                                    </table>
+                                  <button class="ch_sp save-button" onclick="saveData()">Save</button>
+                             </div>
+                              
+                        </div>
+                    </div>
+                </div>
+            </ul>
+            <!-- Logout -->
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown ">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <img src="account_logo.jpg" alt="Account" height="27" width="27">
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Guest</a></li>
+                        <li><a class="dropdown-item" href="#">Login</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<br>
+
+<body>
+    <h2 style="color:red;text-align: center;">Showing Data For :</h2>
+    <!-- Main Component -->
+    <div class="main" id="dynamicContentPlaceholder">
+        <br>
+        <main class="content px-3 py-2">
+            <div class="container-fluid">
+                <div class="row row-cols-1 row-cols-md-4 g-4">
+
+                    <div class="col">
+                        <div class="card text-center mb-3 ">
+                            <div class="card-body">
+                                <h5 class="card-title">Channel-1</h5>
+                                <textarea id="receivedDataTextarea1" rows="1" cols="6"
+                                    style="font-size: 24pt; color: green;text-align: center; border: none; resize: none;"
+                                    readonly></textarea>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary" style="border-radius: 25px;" id="channel_1">More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card text-center mb-3 ">
+                            <div class="card-body">
+                                <h5 class="card-title">Channel-2</h5>
+                                <textarea id="receivedDataTextarea2" rows="1" cols="6"
+                                    style="font-size: 24pt; color: green; text-align: center; border: none; resize: none;"
+                                    readonly></textarea>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary" style="border-radius: 25px;" id="channel_2">More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card text-center mb-3 ">
+                            <div class="card-body">
+                                <h5 class="card-title">Channel-3</h5>
+                                <textarea id="receivedDataTextarea3" rows="1" cols="6"
+                                    style="font-size: 24pt; color: green; text-align: center; border: none; resize: none;"
+                                    readonly></textarea>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary" style="border-radius: 25px;" id="channel_3">More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card text-center mb-3 ">
+                            <div class="card-body">
+                                <h5 class="card-title">Channel-4</h5>
+                                <textarea id="receivedDataTextarea4" rows="1" cols="6"
+                                    style="font-size: 24pt; color: green; text-align: center; border: none; resize: none;"
+                                    readonly></textarea>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary" style="border-radius: 25px;" id="channel_4">More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card text-center mb-3 ">
+                            <div class="card-body">
+                                <h5 class="card-title">Channel-5</h5>
+                                <textarea id="receivedDataTextarea5" rows="1" cols="6"
+                                    style="font-size: 24pt; color: green; text-align: center; border: none; resize: none;"
+                                    readonly></textarea>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary" style="border-radius: 25px;" id="channel_5">More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card text-center mb-3 ">
+                            <div class="card-body">
+                                <h5 class="card-title">Channel-6</h5>
+                                <textarea id="receivedDataTextarea6" rows="1" cols="6"
+                                    style="font-size: 24pt; color: green; text-align: center; border: none; resize: none;"
+                                    readonly></textarea>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary" style="border-radius: 25px;" id="channel_6">More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card text-center mb-3 ">
+                            <div class="card-body">
+                                <h5 class="card-title">Channel-7</h5>
+                                <textarea id="receivedDataTextarea7" rows="1" cols="6"
+                                    style="font-size: 24pt; color: green; text-align: center; border: none; resize: none;"
+                                    readonly></textarea>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary" style="border-radius: 25px;" id="channel_7">More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card text-center mb-3 ">
+                            <div class="card-body">
+                                <h5 class="card-title">Channel-8</h5>
+                                <textarea id="receivedDataTextarea8" rows="1" cols="6"
+                                    style="font-size: 24pt; color: green; text-align: center; border: none; resize: none;"
+                                    readonly></textarea>
+                                <p class="card-text"></p>
+                                <a href="#" class="btn btn-primary" style="border-radius: 25px;" id="channel_8">More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    
+    <!-- Your main page script -->
+    <script>
+        document.getElementById('channel_1').addEventListener('click', function () {
+        const selectedDateInput = document.getElementById('selectDate');
+        const selectedDate = selectedDateInput.value;
+        // Add selected date as a URL parameter
+        window.location.href = `Channel_1.html?selectedDate=${selectedDate}`;
+        });
+        
+        document.getElementById('channel_2').addEventListener('click', function() {
+        window.location.href = 'Channel_2.html';
+        });
+        document.getElementById('channel_3').addEventListener('click', function() {
+        window.location.href = 'Channel_3.html';
+        });
+        document.getElementById('channel_4').addEventListener('click', function() {
+        window.location.href = 'Channel_4.html';
+        });
+        document.getElementById('channel_5').addEventListener('click', function() {
+        window.location.href = 'Channel_5.html';
+        });
+        document.getElementById('channel_6').addEventListener('click', function() {
+        window.location.href = 'Channel_6.html';
+        });
+        document.getElementById('channel_7').addEventListener('click', function() {
+        window.location.href = 'Channel_7.html';
+        });
+        document.getElementById('channel_8').addEventListener('click', function() {
+        window.location.href = 'Channel_8.html';
+        });
+    </script>
+    
+    <script src="renderer.js"></script>
+    <script src="Channel_1.js"></script>
+    <!-- <script src="script.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
